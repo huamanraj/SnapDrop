@@ -11,40 +11,40 @@ const DownloadPage = () => {
     const [fileInfo, setFileInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [fileNotFound, setFileNotFound] = useState(false);
-  
+
     useEffect(() => {
-      fetchFileInfo();
+        fetchFileInfo();
     }, [fileId]);
-  
+
     const fetchFileInfo = async () => {
-      try {
-        const file = await storage.getFile(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
-        setFileInfo(file);
-      } catch (error) {
-        setFileNotFound(true);
-        toast.error('File not found');
-      }
-      setLoading(false);
+        try {
+            const file = await storage.getFile(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
+            setFileInfo(file);
+        } catch (error) {
+            setFileNotFound(true);
+            toast.error('File not found');
+        }
+        setLoading(false);
     };
-  
+
     const handleDownload = async () => {
-      try {
-        const result = await storage.getFileDownload(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
-        const downloadUrl = result.href;
-        console.log('File ID:', fileId);
-  
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = fileInfo?.name || 'downloaded_file';  // Use file name from state
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);  // Remove the link after clicking
-      } catch (error) {
-        console.error('Download Error:', error);
-        toast.error('Download failed');
-      }
+        try {
+            const result = await storage.getFileDownload(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
+            const downloadUrl = result.href;
+            console.log('File ID:', fileId);
+
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = fileInfo?.name || 'downloaded_file';  // Use file name from state
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);  // Remove the link after clicking
+        } catch (error) {
+            console.error('Download Error:', error);
+            toast.error('Download failed');
+        }
     };
-  
+
 
     if (loading) {
         return (
@@ -78,7 +78,7 @@ const DownloadPage = () => {
 
         <div className="h-screen flex flex-col">
             {/* Header Section */}
-            
+
             <div className="items-center justify-center flex flex-row py-4 bg-white ">
                 <img src={logo} alt="SnapDrop Logo" className=" w-12 mr-1 h-12 object-contain mb-1" />
                 <h1 className="text-2xl font-bold text-gray-800">SnapDrop</h1>
@@ -89,10 +89,15 @@ const DownloadPage = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white mt-32  text-center "
+                    className="bg-white mt-32 w-[80%] sm:w-[60%] text-center p-6 rounded-lg"
                 >
                     <FiFile className="text-4xl text-blue-500 mx-auto mb-2" />
-                    <h2 className="text-xl font-bold text-gray-800 mb-2">{fileInfo?.name}</h2>
+                    <h2
+                        className="text-xl font-bold text-gray-800 mb-2 truncate mx-auto w-[80%]"
+                        title={fileInfo?.name}
+                    >
+                        {fileInfo?.name}
+                    </h2>
                     <p className="text-gray-500 mb-4">Size: {fileSizeMB.toFixed(2)} MB</p>
                     <motion.button
                         onClick={handleDownload}
@@ -103,6 +108,7 @@ const DownloadPage = () => {
                     </motion.button>
                 </motion.div>
             </div>
+
         </div>
     );
 };
