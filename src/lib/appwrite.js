@@ -16,12 +16,19 @@ const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 // Upload file function
 export const uploadFile = async (file) => {
     try {
+        if (!file || !(file instanceof File)) {
+            throw new Error('Invalid file input');
+        }
+
+        console.log('Uploading file:', file.name, 'Size:', file.size);
+
         // Upload file to storage
         const fileUpload = await storage.createFile(
             STORAGE_BUCKET_ID,
             ID.unique(),
             file
         );
+        console.log('File uploaded successfully:', fileUpload);
 
         // Store file metadata in database
         const fileDoc = await databases.createDocument(
@@ -35,16 +42,18 @@ export const uploadFile = async (file) => {
                 uploadDate: new Date().toISOString()
             }
         );
+        console.log('File metadata saved successfully:', fileDoc);
 
         return {
             fileId: fileUpload.$id,
             fileData: fileDoc
         };
     } catch (error) {
-        console.error('Upload error:', error);
+        console.error('Upload error:', error.message);
         throw error;
     }
 };
+
 
 // Get file details
 export const getFile = async (fileId) => {

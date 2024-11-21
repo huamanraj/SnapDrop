@@ -11,6 +11,7 @@ const DownloadPage = () => {
     const [fileInfo, setFileInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [fileNotFound, setFileNotFound] = useState(false);
+    const [downloadInProgress, setDownloadInProgress] = useState(false);
 
     useEffect(() => {
         fetchFileInfo();
@@ -28,23 +29,50 @@ const DownloadPage = () => {
     };
 
     const handleDownload = async () => {
+        if (!fileInfo) {
+            toast.error('File info is not available');
+            return;
+        }
+    
         try {
+            setDownloadInProgress(true);
             const result = await storage.getFileDownload(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
             const downloadUrl = result.href;
-            console.log('File ID:', fileId);
-
+    
+            // Fetch the file content
+            const response = await fetch(downloadUrl);
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch the file');
+            }
+    
+            // Ensure the file content is retrieved correctly
+            const contentType = response.headers.get('Content-Type');
+            const fileExtension = fileInfo?.name.split('.').pop();
+    
+            // Create a Blob from the response (ensure it's treated as binary data)
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+    
+            // Ensure the file is saved with the correct extension (based on the fetched file's extension)
             const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = fileInfo?.name || 'downloaded_file';  // Use file name from state
+            a.href = blobUrl;
+            a.download = fileInfo?.name || `downloaded_file.${fileExtension || 'bin'}`; // Use file name from state or default
             document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);  // Remove the link after clicking
+            document.body.removeChild(a); // Clean up the link
+    
+            // Revoke the object URL after use
+            URL.revokeObjectURL(blobUrl);
+            toast.success('Download started!');
         } catch (error) {
             console.error('Download Error:', error);
             toast.error('Download failed');
+        } finally {
+            setDownloadInProgress(false);
         }
     };
-
+    
 
     if (loading) {
         return (
@@ -75,10 +103,8 @@ const DownloadPage = () => {
     const fileSizeMB = (fileInfo?.sizeOriginal || 0) / (1024 * 1024);
 
     return (
-
         <div className="h-screen flex flex-col">
             {/* Header Section */}
-
             <div className="items-center justify-center flex flex-row py-4 bg-white ">
                 <img src={logo} alt="SnapDrop Logo" className=" w-12 mr-1 h-12 object-contain mb-1" />
                 <h1 className="text-2xl font-bold text-gray-800">SnapDrop</h1>
@@ -101,14 +127,20 @@ const DownloadPage = () => {
                     <p className="text-gray-500 mb-4">Size: {fileSizeMB.toFixed(2)} MB</p>
                     <motion.button
                         onClick={handleDownload}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold inline-flex items-center space-x-2 hover:bg-blue-500"
+                        className={`bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold inline-flex items-center space-x-2 hover:bg-blue-500 ${downloadInProgress ? 'cursor-not-allowed opacity-50' : ''}`}
+                        disabled={downloadInProgress}
                     >
-                        <FiDownload />
-                        <span>Download</span>
+                        {downloadInProgress ? (
+                            <span>Downloading...</span>
+                        ) : (
+                            <>
+                                <FiDownload />
+                                <span>Download</span>
+                            </>
+                        )}
                     </motion.button>
                 </motion.div>
             </div>
-
         </div>
     );
 };

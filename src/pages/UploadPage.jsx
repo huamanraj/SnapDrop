@@ -52,10 +52,10 @@ const UploadPage = () => {
       toast.error('Upload failed. Please try again.');
     } finally {
       setUploading(false);
-      // setTimeout(() => {
-      //   setProgress(0);
-      //   setLatestUpload(null);
-      // }, 10000);
+      setTimeout(() => {
+        setProgress(0);
+        setLatestUpload(null);
+      }, 50000);
     }
   };
 
