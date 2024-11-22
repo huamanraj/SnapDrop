@@ -39,7 +39,8 @@ export const uploadFile = async (file) => {
                 fileId: fileUpload.$id,
                 fileName: file.name,
                 fileSize: file.size,
-                uploadDate: new Date().toISOString()
+                uploadDate: new Date().toISOString(),
+                
             }
         );
         console.log('File metadata saved successfully:', fileDoc);

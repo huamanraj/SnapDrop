@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { FiUpload, FiLink, FiShare2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png'
-import { FiLinkedin, FiGithub, FiGlobe } from 'react-icons/fi';
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { TbWorldWww } from "react-icons/tb";
 
 const Feature = ({ icon: Icon, title, description }) => (
   <motion.div
@@ -42,24 +43,24 @@ const LandingPage = () => {
       <BackgroundSVG />
 
 
-{/* 
-      <div className="fixed top-4 right-4 flex space-x-4 z-10">
+
+      <div className="fixed top-4 right-4 flex space-x-4 z-20">
         <a href="https://www.linkedin.com/in/huamanraj" target="_blank" rel="noopener noreferrer">
           <div className="text-blue-600 hover:text-blue-800 transition-transform transform hover:scale-110">
-            <FiLinkedin className="w-6 h-6" />
+            <FaLinkedin className="w-6 h-6" />
           </div>
         </a>
         <a href="https://github.com/huamanraj" target="_blank" rel="noopener noreferrer">
           <div className="text-gray-800 hover:text-gray-900 transition-transform transform hover:scale-110">
-            <FiGithub className="w-6 h-6" />
+            <FaGithub  className="w-6 h-6" />
           </div>
         </a>
         <a href="https://aman-raj.xyz" target="_blank" rel="noopener noreferrer">
           <div className="text-green-600 hover:text-green-800 transition-transform transform hover:scale-110">
-            <FiGlobe className="w-6 h-6" />
+            <TbWorldWww className="w-6 h-6" />
           </div>
         </a>
-      </div> */}
+      </div>
 
       <main className="container mx-auto px-6 py-16 flex flex-col items-center text-center relative z-10">
 
@@ -70,7 +71,7 @@ const LandingPage = () => {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="w-10 h-10 mr-2 flex items-center justify-center"
+            className="w-12 h-12 mr-1 flex items-center justify-center"
 
           >
             <img src={logo} alt="Logo" className="w-full h-full   " />
@@ -137,11 +138,7 @@ const LandingPage = () => {
 export default LandingPage;
 
 console.log(`
-  A     M     M  AAAAA   N   N
- A A    MM   MM  A   A  NN  N
-AAAAA   M M M M  AAAAA  N N N
-A   A   M  M  M  A   A  N  NN
-A   A   M     M  A   A  N   N
-`);
+  Amam Raj
+  `);
 
 console.log('Lets connect devs: www.aman-raj.xyz');

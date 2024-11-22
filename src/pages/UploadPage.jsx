@@ -7,6 +7,7 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { uploadFile, databases } from '../lib/appwrite';
 import { saveToLocalStorage, getFromLocalStorage, removeFromLocalStorage } from '../utils/localStorage';
+import axios from 'axios';
 
 const UploadPage = () => {
   const [uploading, setUploading] = useState(false);
@@ -15,12 +16,27 @@ const UploadPage = () => {
   const [latestUpload, setLatestUpload] = useState(null);
   const [customId, setCustomId] = useState('');
   const [isIdValid, setIsIdValid] = useState(true);
+  const [ipAddress, setIpAddress] = useState('');
 
   useEffect(() => {
     const links = getFromLocalStorage();
     setSharedLinks(links || []);
   }, []);
 
+
+  useEffect(() => {
+    const fetchIPAddress = async () => {
+      try {
+        const response = await axios.get('https://api.ipify.org?format=json');
+        setIpAddress(response.data.ip);
+      } catch (error) {
+        console.error('Error fetching IP address:', error);
+        toast.error('Failed to fetch IP address.');
+      }
+    };
+
+    fetchIPAddress();
+  }, []);
 
 
 
@@ -44,6 +60,7 @@ const UploadPage = () => {
         fileSize: file.size,
         shareLink: `${window.location.origin}/download/${result.fileId}`,
         uploadDate: new Date().toISOString(),
+        userId: ipAddress,
       };
 
       saveToLocalStorage(linkData);
@@ -201,10 +218,10 @@ const UploadPage = () => {
                 exit={{ opacity: 0 }}
                 className="bg-gray-50 text-gray-800 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm"
               >
-                <div className="flex items-start sm:items-center space-x-3">
+                <div className="flex items-start sm:items-center space-x-3 max-w-md ">
                   <FiLink className="text-gray-600 text-xl" />
                   <div>
-                    <p className="font-medium text-wrap text-base truncate max-w-[200px] sm:max-w-none">
+                    <p className="font-medium text-wrap text-base truncate  sm:max-w-none">
                       {link.fileName.length > 100
                         ? `${link.fileName.slice(0, 100)}...`
                         : link.fileName}
