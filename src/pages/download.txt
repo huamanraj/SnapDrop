@@ -1,0 +1,40 @@
+useEffect(() => {
+            const loadFileInfo = async () => {
+                try {
+                    if (!fileId) {
+                        throw new Error('Missing fileId parameter');
+                    }
+    
+                    const file = await storage.getFile(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
+                    console.log('File Info:', file);
+                    setFileInfo(file);
+                } catch (error) {
+                    console.error('Error fetching file metadata:', error);
+                }
+            };
+    
+            loadFileInfo();
+        }, [fileId]);
+
+        const handleDownload = async () => {
+            try {
+                if (!fileId) {
+                    throw new Error('Missing fileId parameter');
+                }
+    
+                const downloadUrl = storage.getFileDownload(
+                    import.meta.env.VITE_APPWRITE_BUCKET_ID,
+                    fileId
+                );
+        
+                console.log('Download URL:', downloadUrl);
+        
+                // Open the file in a new tab
+                window.open(downloadUrl, '_blank');
+
+
+            } catch (error) {
+                console.error('Error downloading file:', error);
+            }
+        };
+    

@@ -37,34 +37,10 @@ const DownloadPage = () => {
         try {
             setDownloadInProgress(true);
             const result = await storage.getFileDownload(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
-            const downloadUrl = result.href;
-    
-            // Fetch the file content
-            const response = await fetch(downloadUrl);
-    
-            if (!response.ok) {
-                throw new Error('Failed to fetch the file');
-            }
-    
-            // Ensure the file content is retrieved correctly
-            const contentType = response.headers.get('Content-Type');
-            const fileExtension = fileInfo?.name.split('.').pop();
-    
-            // Create a Blob from the response (ensure it's treated as binary data)
-            const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-    
-            // Ensure the file is saved with the correct extension (based on the fetched file's extension)
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = fileInfo?.name || `downloaded_file.${fileExtension || 'bin'}`; // Use file name from state or default
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a); // Clean up the link
-    
-            // Revoke the object URL after use
-            URL.revokeObjectURL(blobUrl);
+            
+            window.open(result, '_blank');
             toast.success('Download started!');
+
         } catch (error) {
             console.error('Download Error:', error);
             toast.error('Download failed');
