@@ -21,9 +21,13 @@ const UploadPage = () => {
     setSharedLinks(links || []);
   }, []);
 
+
+
+
   const handleUpload = async (file) => {
 
-    
+
+
     setUploading(true);
     try {
       const progressInterval = setInterval(() => {
@@ -48,8 +52,12 @@ const UploadPage = () => {
 
       toast.success('File uploaded successfully!');
     } catch (error) {
+
       console.error('Upload error:', error);
+
       toast.error('Upload failed. Please try again.');
+      
+
     } finally {
       setUploading(false);
       setTimeout(() => {
@@ -74,48 +82,48 @@ const UploadPage = () => {
     toast.success('Link removed');
   };
 
-  const handleSaveCustomId = async () => {
-    if (!customId.match(/^[a-zA-Z0-9_-]+$/)) {
-      setIsIdValid(false);
-      toast.error('Invalid ID. Only letters, numbers, hyphens, and underscores are allowed.');
-      return;
-    }
+  // const handleSaveCustomId = async () => {
+  //   if (!customId.match(/^[a-zA-Z0-9_-]+$/)) {
+  //     setIsIdValid(false);
+  //     toast.error('Invalid ID. Only letters, numbers, hyphens, and underscores are allowed.');
+  //     return;
+  //   }
 
-    const existingLink = sharedLinks.find((link) => link.customId === customId);
-    if (existingLink) {
-      setIsIdValid(false);
-      toast.error('This ID is already taken.');
-      return;
-    }
+  //   const existingLink = sharedLinks.find((link) => link.customId === customId);
+  //   if (existingLink) {
+  //     setIsIdValid(false);
+  //     toast.error('This ID is already taken.');
+  //     return;
+  //   }
 
-    const updatedLinkData = {
-      ...latestUpload,
-      customId,
-      shareLink: `${window.location.origin}/download/${customId}`,
-    };
+  //   const updatedLinkData = {
+  //     ...latestUpload,
+  //     customId,
+  //     shareLink: `${window.location.origin}/download/${customId}`,
+  //   };
 
-    try {
-      await databases.createDocument(
-        import.meta.env.VITE_APPWRITE_DATABASE_ID,
-        import.meta.env.VITE_APPWRITE_COLLECTION_ID,
-        {
-          fileId: latestUpload.fileId,
-          customId,
-        }
-      );
+  //   try {
+  //     await databases.createDocument(
+  //       import.meta.env.VITE_APPWRITE_DATABASE_ID,
+  //       import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+  //       {
+  //         fileId: latestUpload.fileId,
+  //         customId,
+  //       }
+  //     );
 
-      saveToLocalStorage(updatedLinkData);
-      setSharedLinks((prev) =>
-        prev.map((link) => (link.fileId === latestUpload.fileId ? updatedLinkData : link))
-      );
-      setLatestUpload(updatedLinkData);
-      setIsIdValid(true);
-      toast.success('Custom ID saved successfully!');
-    } catch (error) {
-      console.error('Error saving custom ID:', error);
-      toast.error('Failed to save custom ID.');
-    }
-  };
+  //     saveToLocalStorage(updatedLinkData);
+  //     setSharedLinks((prev) =>
+  //       prev.map((link) => (link.fileId === latestUpload.fileId ? updatedLinkData : link))
+  //     );
+  //     setLatestUpload(updatedLinkData);
+  //     setIsIdValid(true);
+  //     toast.success('Custom ID saved successfully!');
+  //   } catch (error) {
+  //     console.error('Error saving custom ID:', error);
+  //     toast.error('Failed to save custom ID.');
+  //   }
+  // };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -147,7 +155,7 @@ const UploadPage = () => {
                 </Button>
               </div>
             </Card>
-{/* 
+            {/* 
             <div className="mt-4">
               <label htmlFor="custom-id" className="block text-sm font-medium text-gray-700">
                 Custom ID (Optional)

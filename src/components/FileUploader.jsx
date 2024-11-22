@@ -16,7 +16,7 @@ export const FileUploader = ({ onFileSelect, progress, isUploading }) => {
   }, [onFileSelect]); 
 
   useEffect(() => {
-    // Reset selected file when upload is complete
+   
     if (progress === 100) {
       setTimeout(() => {
         setSelectedFile(null);
@@ -26,7 +26,7 @@ export const FileUploader = ({ onFileSelect, progress, isUploading }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    maxSize: 100 * 1024 * 1024, // 100MB
+    maxSize: 1024 * 1024 * 1024, // 1GB
     multiple: false,
   });
 
@@ -56,7 +56,10 @@ export const FileUploader = ({ onFileSelect, progress, isUploading }) => {
             {isDragActive ? 'Drop your file here' : 'Drag & drop your file here'}
           </p>
           <p className="text-sm text-gray-400">
-            or click to browse (max 100MB)
+            or click to browse (max 1GB)
+          </p>
+          <p className="text-[10px] text-red-400">
+            *file get deleted after 48hr
           </p>
         </motion.div>
       </div>
