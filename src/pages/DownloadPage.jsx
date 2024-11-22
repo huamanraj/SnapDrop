@@ -33,11 +33,11 @@ const DownloadPage = () => {
             toast.error('File info is not available');
             return;
         }
-    
+
         try {
             setDownloadInProgress(true);
             const result = await storage.getFileDownload(import.meta.env.VITE_APPWRITE_BUCKET_ID, fileId);
-            
+
             window.open(result, '_blank');
             toast.success('Download started!');
 
@@ -48,7 +48,7 @@ const DownloadPage = () => {
             setDownloadInProgress(false);
         }
     };
-    
+
 
     if (loading) {
         return (
